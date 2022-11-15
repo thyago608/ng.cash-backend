@@ -7,14 +7,26 @@ export class UserController {
     async store(request: Request, response: Response) {
         const { username, password } = request.body;
 
-        const userExists = await userRepository.findByName(username);
-
-        if (userExists) {
-            return response.status(400).json({ error: "User exists" });
+        if (!username || !password) {
+            return response.status(400).json({ error: "Username and password are required" });
         }
 
-        const user = await userRepository.create({ username, password });
+        try {
+            const userExists = await userRepository.findByName(username);
 
-        return response.json(user);
+            if (userExists) {
+                return response.status(400).json({ error: "Usurname is already being used" });
+            }
+
+            await userRepository.create({ username, password });
+
+            return response.sendStatus(201);
+        } catch {
+            return response.status(500).json({ error: "Internal server error, try again" });
+        }
+    }
+
+    async index(request: Request, response: Response) {
+
     }
 }

@@ -8,10 +8,11 @@ datasource db {
 }
 
 model User {
-    id       String   @id @default(uuid())
-    username String   @unique
+    id       String @id @default(uuid())
+    username String @unique
     password String
-    Account  Account?
+
+    Account Account?
 
     @@map("users")
 }
@@ -19,23 +20,22 @@ model User {
 model Account {
     id      String  @id @default(uuid())
     balance Decimal
-    user_id String  @unique
-    user    User    @relation(fields: [user_id], references: [id])
 
+    user           User          @relation(fields: [user_id], references: [id])
+    user_id        String        @unique
     transaction_id Transaction[]
 
     @@map("accounts")
 }
 
 model Transaction {
-    id                String   @id @default(uuid())
-    debitedAccountId  String
-    creditedAccountId String
-    value             Decimal
-    created_at        DateTime @default(now())
-
-    account_id String
-    Account    Account @relation(fields: [account_id], references: [id])
+    id                 String   @id @default(uuid())
+    debitedAccountId   String
+    creaditedAccountId String
+    value              Decimal
+    created_at         DateTime @default(now())
+    account_id         String
+    Account            Account  @relation(fields: [account_id], references: [id])
 
     @@map("transactions")
 }

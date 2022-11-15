@@ -19,8 +19,18 @@ export class UsersRepository {
 
     async create({ username, password }: User) {
         const user = await prismaClient.user.create({
-            data: { username, password }
+            data: {
+                username,
+                password
+            }
         });
+
+        await prismaClient.account.create({
+            data: {
+                balance: "100",
+                user_id: user.id
+            }
+        })
 
         return user;
     }
